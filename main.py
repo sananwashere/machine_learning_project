@@ -1,7 +1,3 @@
-# Sentiment Analysis from .txt file (150 reviews) – Interactive
-# Handles commas in reviews
-# Uses TF-IDF, Naive Bayes, Logistic Regression
-# No NLTK required
 
 import pandas as pd
 import re
