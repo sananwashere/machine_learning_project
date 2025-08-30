@@ -1,0 +1,172 @@
+I loved this movie,pos
+The film was terrible,neg
+Fantastic experience,pos
+Awful plot and bad acting,neg
+Absolutely amazing storyline,pos
+Worst movie I have ever seen,neg
+Brilliant acting and visuals,pos
+Disappointing and boring,neg
+Highly recommend this film,pos
+Do not waste your time,neg
+Incredible direction and performance,pos
+Poorly executed script,neg
+Enjoyed every moment,pos
+Not worth watching,neg
+A masterpiece of cinema,pos
+Terrible, just terrible,neg
+Loved the characters and plot,pos
+Awful ending,neg
+Outstanding production quality,pos
+Weak story and dialogue,neg
+A must-watch for everyone,pos
+I regret watching it,neg
+Excellent soundtrack and acting,pos
+Boring and predictable,neg
+The cinematography was stunning,pos
+Plot was confusing and dull,neg
+Heartwarming and beautiful,pos
+Disappointing performances,neg
+Fantastic journey from start to finish,pos
+Not engaging at all,neg
+Wonderful cast and direction,pos
+Horrible experience,neg
+Brilliant and entertaining,pos
+I fell asleep halfway,neg
+Highly enjoyable film,pos
+Extremely boring,neg
+Loved the story development,pos
+Poor acting and bad script,neg
+Amazing movie with great visuals,pos
+Waste of money,neg
+Absolutely loved it,pos
+Couldn’t finish it,neg
+Great chemistry between actors,pos
+Very disappointing,neg
+Perfect blend of humor and action,pos
+Terrible plot twists,neg
+Enjoyed the movie thoroughly,pos
+Not interesting at all,neg
+Outstanding storyline and characters,pos
+Worst film ever,neg
+Loved the movie,pos
+Hated every minute,neg
+Fantastic experience,pos
+Bad acting and worse story,neg
+Enjoyed it immensely,pos
+Would not recommend,neg
+Highly entertaining,pos
+Very dull and boring,neg
+Amazing plot,pos
+Confusing and weak storyline,neg
+Great film with excellent acting,pos
+Poorly made,neg
+Loved the visuals,pos
+Terrible soundtrack,neg
+Outstanding performance by cast,pos
+Weak and forgettable,neg
+Absolutely fantastic,pos
+Disappointing movie,neg
+Brilliant execution,pos
+Awful experience,neg
+Loved the writing,pos
+Worst direction ever,neg
+Highly recommended,pos
+I did not like it,neg
+Wonderful story,pos
+Badly executed,neg
+Great pacing,pos
+Terrible cinematography,neg
+Enjoyed the humor,pos
+Predictable and boring,neg
+Amazing dialogue,pos
+Horrible plot,neg
+Loved every scene,pos
+Not enjoyable,neg
+Fantastic cast,pos
+Weak performances,neg
+Brilliant action sequences,pos
+Boring drama,neg
+Excellent storyline,pos
+Very confusing movie,neg
+Highly emotional,pos
+Disappointing,neg
+Loved the soundtrack,pos
+Terrible movie,neg
+Great character development,pos
+Hated it,neg
+Outstanding movie,pos
+Worst acting,neg
+Absolutely loved it,pos
+Poorly written,neg
+Perfect film,pos
+Not interesting,neg
+Fantastic visuals,pos
+Awful plot,neg
+Brilliant directing,pos
+Boring characters,neg
+Highly enjoyable,pos
+Extremely dull,neg
+Loved the ending,pos
+Terrible beginning,neg
+Wonderful acting,pos
+Not worth watching,neg
+Amazing plot twists,pos
+Predictable storyline,neg
+Great cinematography,pos
+Poor editing,neg
+Enjoyed the pacing,pos
+Boring and long,neg
+Outstanding production,pos
+Weak script,neg
+Fantastic journey,pos
+Disappointing acting,neg
+Loved the soundtrack,pos
+Horrible experience,neg
+Brilliant writing,pos
+Awful movie,neg
+Highly recommend,pos
+Not engaging,neg
+Perfect direction,pos
+Terrible storyline,neg
+Great performance,pos
+Weak acting,neg
+Amazing cast,pos
+Boring film,neg
+Outstanding movie,pos
+Disappointing plot,neg
+Loved it,pos
+Not enjoyable,neg
+Fantastic scenes,pos
+Awful execution,neg
+Brilliant editing,pos
+Terrible soundtrack,neg
+Highly entertaining,pos
+Very boring,neg
+Excellent production,pos
+Horrible visuals,neg
+Enjoyed it,pos
+Not engaging at all,neg
+Great film,pos
+Weak storyline,neg
+Loved the acting,pos
+Awful experience,neg
+Perfect movie,pos
+Terrible plot,neg
+Outstanding characters,pos
+Bad performances,neg
+Amazing experience,pos
+Boring movie,neg
+Fantastic movie,pos
+Disappointing,neg
+Brilliant film,pos
+Weak direction,neg
+Highly enjoyable,pos
+Not good,neg
+Loved every part,pos
+Terrible ending,neg
+Great storyline,pos
+Awful acting,neg
+Outstanding performance,pos
+Boring and dull,neg
+Perfect experience,pos
+Not recommended,neg

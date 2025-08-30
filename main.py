@@ -1,6 +1,7 @@
-# Sentiment Analysis Project
-# A machine learning example: classify movie reviews as positive or negative
-
+# Sentiment Analysis from .txt file (150 reviews) – Interactive
+# Handles commas in reviews
+# Uses TF-IDF, Naive Bayes, Logistic Regression
+# No NLTK required
 
 import pandas as pd
 import re
@@ -12,7 +13,7 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 
-#  Custom stopword list
+# Custom stopword list
 stop_words = {
     "the","is","a","an","and","or","in","on","at","of","to",
     "for","with","by","this","that","it","was","i","you","he",
@@ -20,79 +21,70 @@ stop_words = {
     "has","had","do","does","did","but","not"
 }
 
-#  Dataset (20 short reviews)
-data = {
-    "text": [
-        "I love this movie, it is amazing!",
-        "This film was terrible and boring.",
-        "What a fantastic experience, truly great.",
-        "I hated it, worst movie ever.",
-        "Absolutely wonderful, I enjoyed it a lot.",
-        "Awful plot, bad acting, do not watch.",
-        "Brilliant film, the actors were outstanding.",
-        "Poorly written and badly directed.",
-        "One of the best movies I have seen.",
-        "Terrible waste of time, avoid this film.",
-        "Beautiful story and excellent acting.",
-        "Disappointing and forgettable.",
-        "A masterpiece with amazing visuals.",
-        "Predictable and dull.",
-        "Loved every minute of it.",
-        "I regret watching this film.",
-        "Outstanding performance by the cast.",
-        "Weak story and poor dialogue.",
-        "Highly recommended, a must watch!",
-        "Not worth the hype, very bad."
-    ],
-    "label": [
-        "pos", "neg", "pos", "neg", "pos",
-        "neg", "pos", "neg", "pos", "neg",
-        "pos", "neg", "pos", "neg", "pos",
-        "neg", "pos", "neg", "pos", "neg"
-    ]
-}
+# Load dataset from .txt file (handles commas in reviews)
+data = []
+with open("reviews.txt", "r") as file:
+    for line in file:
+        line = line.strip()
+        if not line:
+            continue  # skip empty lines
+        text, label = line.rsplit(",", 1)  # split only on last comma
+        data.append({"text": text, "label": label})
 
 df = pd.DataFrame(data)
 
-#  Clean text (lowercase, remove punctuation, stopwords)
+# Clean text
 def clean_text(text):
-    text = text.lower()  # lowercase
-    text = re.sub(r'[^a-z\s]', '', text)  # remove punctuation/numbers
-    text = " ".join([word for word in text.split() if word not in stop_words])  # remove stopwords
+    text = text.lower()
+    text = re.sub(r'[^a-z\s]', '', text)
+    text = " ".join([word for word in text.split() if word not in stop_words])
     return text
 
 df['clean_text'] = df['text'].apply(clean_text)
 
-#  Split into training and test sets
-X_train, X_test, y_train, y_test = train_test_split(df['clean_text'], df['label'], test_size=0.25, random_state=42)
+# Split into training and test sets
+X_train, X_test, y_train, y_test = train_test_split(
+    df['clean_text'], df['label'], test_size=0.25, random_state=42
+)
 
-#  TF-IDF Vectorization
-vectorizer = TfidfVectorizer(max_features=1000, ngram_range=(1,2))
+# TF-IDF vectorization
+vectorizer = TfidfVectorizer(max_features=5000, ngram_range=(1,2))
 X_train_vec = vectorizer.fit_transform(X_train)
 X_test_vec = vectorizer.transform(X_test)
 
-#  Train models (Naive Bayes + Logistic Regression)
+# Train models
 nb_model = MultinomialNB()
 lr_model = LogisticRegression(max_iter=1000)
 
 nb_model.fit(X_train_vec, y_train)
 lr_model.fit(X_train_vec, y_train)
 
-#  Predictions
+# Predictions on test set
 nb_pred = nb_model.predict(X_test_vec)
 lr_pred = lr_model.predict(X_test_vec)
 
-#  Evaluation
+# Evaluation
 print("Naive Bayes Accuracy:", accuracy_score(y_test, nb_pred))
 print("Logistic Regression Accuracy:", accuracy_score(y_test, lr_pred))
+print("\nClassification Report (Logistic Regression):\n",
+      classification_report(y_test, lr_pred, zero_division=0))
 
-print("\nClassification Report (Logistic Regression):\n", classification_report(y_test, lr_pred))
-
-#  Confusion Matrix (Logistic Regression)
+# Confusion Matrix
 cm = confusion_matrix(y_test, lr_pred)
-plt.figure(figsize=(5,4))
+plt.figure(figsize=(6,5))
 sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=['neg','pos'], yticklabels=['neg','pos'])
 plt.title("Confusion Matrix - Logistic Regression")
 plt.xlabel("Predicted")
 plt.ylabel("Actual")
 plt.show()
+
+#  Interactive review prediction
+while True:
+    user_input = input("\nEnter a movie review (or type 'exit' to quit): ")
+    if user_input.lower() == "exit":
+        print("Goodbye!")
+        break
+    clean_input = clean_text(user_input)
+    input_vec = vectorizer.transform([clean_input])
+    prediction = lr_model.predict(input_vec)[0]
+    print("Predicted sentiment:", prediction.upper())
