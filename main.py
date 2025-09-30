@@ -2,10 +2,12 @@ import pandas as pd
 import re
 import matplotlib.pyplot as plt
 import seaborn as sns
+from collections import Counter
 from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.linear_model import LogisticRegression
+from sklearn.svm import LinearSVC
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 from wordcloud import WordCloud
 
@@ -17,14 +19,14 @@ stop_words = {
     "has","had","do","does","did","but","not"
 }
 
-# Load dataset from .txt file
+# Load dataset
 data = []
 with open("reviews.txt", "r") as file:
     for line in file:
         line = line.strip()
         if not line:
             continue
-        text, label = line.rsplit(",", 1)  # split only on last comma
+        text, label = line.rsplit(",", 1)
         data.append({"text": text, "label": label})
 
 df = pd.DataFrame(data)
@@ -38,7 +40,7 @@ def clean_text(text):
 
 df['clean_text'] = df['text'].apply(clean_text)
 
-# Class distribution
+# Plot class distribution
 plt.figure(figsize=(5,4))
 sns.countplot(x=df['label'])
 plt.title("Sentiment Distribution")
@@ -56,31 +58,49 @@ X_test_vec = vectorizer.transform(X_test)
 
 # Train models
 nb_model = MultinomialNB()
-lr_model = LogisticRegression(max_iter=1000)
-
 nb_model.fit(X_train_vec, y_train)
-lr_model.fit(X_train_vec, y_train)
-
-# Predictions
 nb_pred = nb_model.predict(X_test_vec)
+
+lr_model = LogisticRegression(max_iter=1000)
+lr_model.fit(X_train_vec, y_train)
 lr_pred = lr_model.predict(X_test_vec)
 
-# Evaluation
+svm_model = LinearSVC()
+svm_model.fit(X_train_vec, y_train)
+svm_pred = svm_model.predict(X_test_vec)
+
+# -----------------------------
+# Cross-Validation Accuracy
+# -----------------------------
+print("Cross-Validation Accuracy (5-fold):")
+for name, model in zip(['Naive Bayes', 'Logistic Regression', 'SVM'],
+                       [nb_model, lr_model, svm_model]):
+    scores = cross_val_score(model, vectorizer.transform(df['clean_text']), df['label'], cv=5)
+    print(f"{name}: {scores.mean():.4f} ± {scores.std():.4f}")
+
+# Evaluate models
+print("\nTest Set Accuracy:")
 print("Naive Bayes Accuracy:", accuracy_score(y_test, nb_pred))
 print("Logistic Regression Accuracy:", accuracy_score(y_test, lr_pred))
+print("SVM Accuracy:", accuracy_score(y_test, svm_pred))
+
 print("\nClassification Report (Logistic Regression):\n",
       classification_report(y_test, lr_pred, zero_division=0))
+print("Classification Report (SVM):\n",
+      classification_report(y_test, svm_pred, zero_division=0))
 
-# Confusion Matrix
-cm = confusion_matrix(y_test, lr_pred)
-plt.figure(figsize=(6,5))
-sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=['neg','pos'], yticklabels=['neg','pos'])
-plt.title("Confusion Matrix - Logistic Regression")
-plt.xlabel("Predicted")
-plt.ylabel("Actual")
-plt.show()
+# Plot confusion matrices
+models_preds = {'Logistic Regression': lr_pred, 'SVM': svm_pred}
+for name, pred in models_preds.items():
+    cm = confusion_matrix(y_test, pred)
+    plt.figure(figsize=(6,5))
+    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=['neg','pos'], yticklabels=['neg','pos'])
+    plt.title(f"Confusion Matrix - {name}")
+    plt.xlabel("Predicted")
+    plt.ylabel("Actual")
+    plt.show()
 
-# Word Clouds
+# Word clouds
 pos_text = " ".join(df[df['label']=="pos"]['clean_text'])
 neg_text = " ".join(df[df['label']=="neg"]['clean_text'])
 
@@ -96,17 +116,32 @@ plt.axis("off")
 plt.title("Negative Word Cloud")
 plt.show()
 
-# Top Predictive Words (Logistic Regression)
+# Top predictive words for Logistic Regression
 feature_names = vectorizer.get_feature_names_out()
-coef = lr_model.coef_[0]
+coef_lr = lr_model.coef_[0]
+top_pos_lr = sorted(zip(coef_lr, feature_names))[-10:]
+top_neg_lr = sorted(zip(coef_lr, feature_names))[:10]
 
-top_pos = sorted(zip(coef, feature_names))[-10:]
-top_neg = sorted(zip(coef, feature_names))[:10]
+print("\nTop Positive Words (Logistic Regression):", [w for c, w in top_pos_lr])
+print("Top Negative Words (Logistic Regression):", [w for c, w in top_neg_lr])
 
-print("\nTop Positive Words:", [w for c, w in top_pos])
-print("Top Negative Words:", [w for c, w in top_neg])
+# Top predictive words for SVM
+coef_svm = svm_model.coef_[0]
+top_pos_svm = sorted(zip(coef_svm, feature_names))[-10:]
+top_neg_svm = sorted(zip(coef_svm, feature_names))[:10]
 
-# Interactive review prediction
+print("\nTop Positive Words (SVM):", [w for c, w in top_pos_svm])
+print("Top Negative Words (SVM):", [w for c, w in top_neg_svm])
+
+# -----------------------------
+# Interactive review prediction with ensemble voting
+# -----------------------------
+def ensemble_predict(vec):
+    preds = [nb_model.predict(vec)[0],
+             lr_model.predict(vec)[0],
+             svm_model.predict(vec)[0]]
+    return Counter(preds).most_common(1)[0][0]
+
 while True:
     user_input = input("\nEnter a movie review (or type 'exit' to quit): ")
     if user_input.lower() == "exit":
@@ -114,5 +149,14 @@ while True:
         break
     clean_input = clean_text(user_input)
     input_vec = vectorizer.transform([clean_input])
-    prediction = lr_model.predict(input_vec)[0]
-    print("Predicted sentiment:", prediction.upper())
+
+    nb_prediction = nb_model.predict(input_vec)[0]
+    lr_prediction = lr_model.predict(input_vec)[0]
+    svm_prediction = svm_model.predict(input_vec)[0]
+    ensemble_prediction = ensemble_predict(input_vec)
+
+    print("\nPredicted Sentiments:")
+    print("Naive Bayes:", nb_prediction.upper())
+    print("Logistic Regression:", lr_prediction.upper())
+    print("SVM:", svm_prediction.upper())
+    print("Ensemble Voting:", ensemble_prediction.upper())
